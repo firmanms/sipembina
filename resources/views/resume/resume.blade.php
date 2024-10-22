@@ -88,7 +88,7 @@
             <td><b>Kompetensi yang Dibutuhkan</b> <br> {!! $pembinakarir->kompetensi_dibutuhkan !!}</td>
         </tr>
         <tr>
-            <td><b>Riawat Pelatihan</b> <br> {!! $pegawai->riwayat_pelatihan !!}</td>
+            <td><b>Riwayat Pelatihan</b> <br> {!! $pegawai->riwayat_pelatihan !!}</td>
             <td><b>Usulan Pelatihan</b> <br> {!! $pembinakarir->usulan_pelatihan !!}</td>
         </tr>
 
