@@ -23,7 +23,7 @@ class BackPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        URL::forceScheme('https');
+        // URL::forceScheme('https');
         return $panel
             ->default()
             ->id('back')
@@ -36,6 +36,12 @@ class BackPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+            ])
+            ->navigationGroups([
+                'Profil',
+                'Master',
+                'Filament Shield',
+
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -53,8 +59,13 @@ class BackPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                \TomatoPHP\FilamentUsers\FilamentUsersPlugin::make(),
+            ])
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
     }
 }

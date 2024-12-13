@@ -9,6 +9,9 @@ use App\Models\Refbagian;
 use App\Models\Refjabatan;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -20,9 +23,11 @@ class PegawaiResource extends Resource
 {
     protected static ?string $model = Pegawai::class;
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationLabel = 'Pegawai';
+
+    protected static ?string $navigationGroup = 'Master';
 
     protected static ?string $modelLabel = 'Pegawai';
 
@@ -67,6 +72,10 @@ class PegawaiResource extends Resource
                 Forms\Components\TextInput::make('nama')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\DatePicker::make('tgl_lahir')
+                    ->required(),
+                Forms\Components\DatePicker::make('masa_kerja')
+                    ->label('Masa Kerja PNS'),
                 Forms\Components\Select::make('pangkat_gol')
                     ->required()
                     ->options([
@@ -88,6 +97,8 @@ class PegawaiResource extends Resource
                         'Juru Muda Tingkat I I b' => 'Juru Muda Tingkat I I b',
                         'Juru Muda I a' => 'Juru Muda I a',
                     ]),
+                Forms\Components\DatePicker::make('tgl_pangkat')
+                    ->required(),
                 Forms\Components\Select::make('eselon')
                     ->required()
                     ->options([
@@ -121,15 +132,15 @@ class PegawaiResource extends Resource
                 Forms\Components\RichEditor::make('komptensi')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\RichEditor::make('riwayat_jabatan')
+                Forms\Components\Hidden::make('riwayat_jabatan')
                     ->required()
-                    ->columnSpanFull(),
-                Forms\Components\RichEditor::make('riwayat_pelatihan')
+                    ->default('-'),
+                Forms\Components\Hidden::make('riwayat_pelatihan')
                     ->required()
-                    ->columnSpanFull(),
-                Forms\Components\RichEditor::make('output_kinerja')
+                    ->default('-'),
+                Forms\Components\Hidden::make('output_kinerja')
                     ->required()
-                    ->columnSpanFull(),
+                    ->default('-'),
             ]);
     }
 
@@ -172,12 +183,63 @@ class PegawaiResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('nip')->label('NIP'),
+        TextEntry::make('nama')->label('Nama Pegawai'),
+        TextEntry::make('bagians.nama')->label('Bagian'),
+        TextEntry::make('jabatans.nama')->label('Jabatan'),
+        TextEntry::make('pangkat_gol')->label('Pangkat Golongan'),
+        TextEntry::make('eselon')->label('Eselon'),
+        TextEntry::make('pendidikan')->label('Pendidikan'),
+        TextEntry::make('jurusan')->label('Jurusan'),
+        TextEntry::make('tgl_bergabung')
+            ->label('Tanggal Bergabung')
+            ->dateTime('d/m/Y'),
+        RepeatableEntry::make('riwayat_jabatan_nip')
+            ->label('Riwayat Jabatan')
+            // ->relationship('riwayat_jabatan_nip') // Nama relasi di model
+            ->schema([
+                TextEntry::make('nama_jabatan')->label('Nama Jabatan'),
+                TextEntry::make('tmt_jabatan')->label('Tanggal Mulai')->dateTime('d/m/Y'),
+                // TextEntry::make('tgl_selesai')->label('Tanggal Selesai')->dateTime('d/m/Y'),
+            ])
+            ->grid(2)
+            ->columnSpanFull(),
+        RepeatableEntry::make('riwayat_pendidikan_nip')
+            ->label('Riwayat Pendidikan')
+            // ->relationship('riwayat_jabatan_nip') // Nama relasi di model
+            ->schema([
+                TextEntry::make('tingkat_pendidikan')->label('Tingkat Pendidikan'),
+                TextEntry::make('nama_sekolah')->label('Nama Sekolah'),
+                // TextEntry::make('tgl_selesai')->label('Tanggal Selesai')->dateTime('d/m/Y'),
+            ])
+            ->grid(2)
+            ->columnSpanFull(),
+        RepeatableEntry::make('riwayat_pelatihan_nip')
+            ->label('Riwayat Pelatihan')
+            // ->relationship('riwayat_jabatan_nip') // Nama relasi di model
+            ->schema([
+                TextEntry::make('nama_pelatihan')->label('Nama Pelatihan'),
+                // TextEntry::make('nama_sekolah')->label('Nama Sekolah'),
+                // TextEntry::make('tgl_selesai')->label('Tanggal Selesai')->dateTime('d/m/Y'),
+            ])
+            ->grid(2)
+            ->columnSpanFull(),
+
+            ]);
+
     }
 
     public static function getRelations(): array

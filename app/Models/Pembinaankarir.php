@@ -21,4 +21,9 @@ class Pembinaankarir extends Model
     {
         return $this->belongsTo(Pegawai::class, 'pegawais_id');
     }
+
+    public function riwayat_jabatan_nip()
+    {
+        return $this->hasMany(RiwayatJabatan::class, 'nip','nip');
+    }
 }

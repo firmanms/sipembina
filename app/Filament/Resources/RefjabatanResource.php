@@ -19,7 +19,7 @@ class RefjabatanResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationGroup = 'Referensi';
+    protected static ?string $navigationGroup = 'Master';
 
     protected static ?string $navigationLabel = 'Jabatan';
 

@@ -11,12 +11,16 @@ class ResumeController extends Controller
 
     public function resume(string $id)
     {
-        $pegawai = Pegawai::with(['jabatans', 'bagians'])
-        ->where('id', $id)
-        ->first();
-        $pegawaiid  = $pegawai->id;
+        $pembinakarir   = Pembinaankarir::where('id',$id)->first();
 
-        $pembinakarir   = Pembinaankarir::where('user_id',$pegawaiid)->first();
+        $pegawai_id = $pembinakarir->pegawais_id;
+
+        $pegawai = Pegawai::with(['jabatans', 'bagians'])
+        ->where('id', $pegawai_id)
+        ->first();
+        // $pegawaiid  = $pegawai->id;
+
+
 
         return view('resume.resume',compact('pegawai', 'pembinakarir'));
 
